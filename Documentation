@@ -1,0 +1,165 @@
+Discussion Theory
+
+Flooding remains one of the most significant environmental challenges in the Philippines, particularly in urban and low-lying areas such as Metro Manila, Bulacan, and Pampanga, where heavy rainfall and inadequate drainage systems often result in water accumulation that disrupts daily life and endangers communities. In recent years, events like the monsoon floods of 2023 and Typhoon Egay have highlighted the need for reliable and automated monitoring systems capable of providing real-time information about water levels. The BAHALAYA project addresses this need by utilizing ultrasonic sensors in a mixed-signal system to continuously detect and monitor water levels, translating analog environmental data into digital signals that can be processed to trigger timely alerts and responses.
+
+Mixed-signal systems are essential in this context because they enable the seamless integration of the ultrasonic sensor’s analog measurements with digital data processing. The HC-SR04 ultrasonic sensor continuously emits high-frequency sound waves and receives echoes that vary depending on the water level. These variations are first represented as analog voltage signals, which are then converted into digital data by the Arduino Uno’s built-in analog-to-digital converter (ADC). Through this conversion, the system can interpret the sensor’s readings with precision—allowing the Arduino to analyze, compare, and act upon the information based on predefined thresholds. As a result, the system determines whether the water level corresponds to safe, warning, or critical conditions, triggering appropriate responses such as LED indicators, buzzer alerts, and pump activation. This demonstrates how mixed-signal integration allows the ultrasonic sensor to transform raw physical measurements into actionable digital signals for effective flood monitoring and control.
+
+The ultrasonic sensor, the core component of the BAHALAYA system, operates based on the principle of time-of-flight, emitting high-frequency sound waves that travel through the air, reflect off the water surface, and return to the sensor as echoes. The sensor measures the time interval of this round trip and generates an electrical signal corresponding to the distance of the water surface. This signal, initially in analog form, can then be processed digitally to inform the system’s decision-making processes, such as activating alarms or operating pumps to manage excessive water. The performance of these sensors depends on factors such as sound wave frequency, environmental conditions, and sensor positioning, all of which are considered to ensure accurate and reliable measurement.
+
+Signal conditioning and noise reduction are also critical in ensuring that the analog output from the sensor is usable for digital processing. Techniques such as filtering or amplification improve the reliability of the measurements by minimizing interference from environmental noise, fluctuations in voltage, or other disturbances. By integrating these elements into a mixed-signal framework, the BAHALAYA project demonstrates how sensors can provide accurate, real-time monitoring in complex environmental conditions.
+
+The practical application of this technology is particularly valuable in the Philippines, where communities are frequently exposed to sudden and severe flooding. By continuously monitoring water levels and providing automated alerts, the BAHALAYA system not only enhances situational awareness but also supports proactive interventions, potentially reducing damage to property and safeguarding lives. This project exemplifies how sensor-based, mixed-signal systems can translate environmental data into actionable insights, bridging the gap between natural phenomena and human response in disaster management.
+
+Objectives
+The BAHALAYA: Ultrasonic Sensor-Driven Flood Control Innovation aims to design, develop, and evaluate a mixed-signal prototype capable of detecting, interpreting, and responding to changes in water levels for flood mitigation purposes. Specifically, the project seeks to accomplish the following objectives:
+
+>To design and develop a mixed-signal flood monitoring system that integrates ultrasonic sensors to detect and measure real-time water levels accurately.
+>To convert analog signals from ultrasonic sensors into digital data using analog-to-digital conversion for efficient processing and analysis.
+>To implement signal conditioning techniques such as amplification and filtering to minimize noise and enhance the accuracy of water level readings.
+>To automate flood alerts and responses by programming the system to trigger warnings or control mechanisms (e.g., alarms or pumps) when water levels reach critical thresholds.
+>To evaluate the system’s performance and reliability under various environmental conditions, ensuring consistent accuracy during rainfall and flood scenarios.
+ >To contribute to disaster preparedness efforts in flood-prone areas by providing a low-cost, real-time water level monitoring and alert system.
+
+
+Materials
+In this section, we provide an overview of the materials, electronic components, and tools essential for constructing and prototyping the project. Each item was carefully selected to facilitate the assembly, testing, and overall implementation of the system.
+
+Materials
+Description
+1. Arduino Uno R3- 
+A microcontroller board based on the ATmega328P serves as the central processing unit of the system. It processes input signals from sensors and controls output devices such as LEDs, displays, and actuators. It is known for its reliability and ease of programming, and it is ideal for automation, control, and prototyping projects.
+
+2. Ultrasonic Sensor (HC-SR04)-
+ A distance-measuring sensor that emits ultrasonic sound waves and measures the time it takes for the echo to return. It enables the system to detect objects or measure proximity accurately. 
+
+3. Mini Submersible Pump- 
+A small DC-powered pump is used to transfer or circulate water. In this project, it operates automatically based on sensor readings and control signals from the Arduino. 
+
+4. LED- 
+Light Emitting Diodes that emit light when current flows through them, serving as LED indicators to display the system’s operational status. The green LED indicates a safe condition, the orange LED signifies a warning state, and the red LED represents a critical condition that requires immediate attention. 
+
+5. LCD Display (16x2)- 
+A Liquid Crystal Display is used to present system data such as sensor readings, operation modes, or notifications in real time. It provides a user-friendly interface for visual output.
+
+6. 9V Battery- 
+A portable power source that provides 9 volts of direct current (DC) to power the circuit. It ensures stable and reliable operation for all connected components.
+
+7. Jumper Wires- 
+Flexible wires with pre-attached terminals are used to connect different components on the PCB. They allow easy prototyping and circuit modification.
+
+8. Printed Circuit Board (PCB)- 
+A rigid board that mechanically supports and electrically connects electronic components through conductive tracks. It ensures an organized and stable circuit layout.
+
+9. Resistor (220 ohms)- 
+A passive electronic component used to limit current flow and protect sensitive devices such as LEDs. It ensures safe operation by maintaining appropriate current levels within the circuit.
+
+10. MOSFET (IRF540N)-
+A Metal-Oxide-Semiconductor Field-Effect Transistor is used as an electronic switch in the circuit. It efficiently controls and regulates the power supplied to high-current devices, such as the water pump, ensuring reliable and energy-efficient operation.
+
+11. Battery Holder- 
+A casing designed to securely hold a 9V battery and provide terminal leads for safe and easy circuit integration.
+
+12. Active Buzzer-
+ An electronic sound-producing device with a built-in oscillating circuit that operates on direct current (DC). It automatically generates an audible tone when powered, serving as an audio indicator or alert within the system to signal specific operations, notifications, or warnings.
+
+13. Diode 1N4007- 
+It was used in the project to allow current to flow in only one direction, protecting the circuit from potential damage caused by reverse voltage.
+
+14. Female Header Pin- 
+A connector component used to establish detachable and secure electrical connections between modules or circuit boards. It allows easy insertion and removal of male pins from sensors or jumper wires, promoting flexibility in testing and reconfiguration.
+
+15. Solid Wire- 
+A single-core electrical wire is used for making firm and stable connections between electronic components and the circuit board.
+
+16. Breadboard- 
+A platform for testing and assembling electronic components before soldering.
+
+17. Sintra Board- 
+A lightweight, durable PVC material used as the primary structural base for the model.
+
+20. Acetate-
+ A clear, flexible plastic sheet used as a transparent cover or window for visual display and protection.
+
+21. Bamboo Straw-
+ A hollow, eco-friendly material used for added structural detail or support elements in the design.
+
+22. Wood-
+ A sturdy material used as a base or frame to provide structural stability and support for the model.
+
+23. Styrofoam- 
+A lightweight material used as filler, support, or base structure for model formation.
+
+24. Acrylic Glass-
+ A transparent material is used as the drainage system of the project.
+
+3.1 Basic Tools
+
+1. Heat Shrinking Tube
+ A thermoplastic sleeve that shrinks when heated, providing insulation and protection for exposed wires and soldered joints.
+
+2. Ruler
+A measuring instrument used to ensure accurate measurements and alignment during model construction.
+
+3. Pliers / Wire Cutter
+A tool used for gripping, twisting, and cutting electrical wires or component leads.
+
+4. Super Glue
+ It was used in the project as an adhesive material to firmly attach and secure different components. 
+
+5. Hot Glue Gun
+ A heating tool used with glue sticks to securely bond materials such as Sintra board, styrofoam, and acrylic pieces.
+
+6. Soldering Iron
+A hand tool that heats solder to permanently join electronic components, ensuring strong and conductive connections.
+
+7. Cutter
+A handheld cutting tool used for trimming wires, cables, or small plastic parts during assembly and installation.
+
+8. Electrical Tape
+An insulating tape used to cover and protect electrical connections, preventing short circuits and ensuring safety.
+
+3.2 Software
+
+1. Arduino IDE 2.3.3
+This was used for programming the Arduino board in this project. It served as the main software tool for writing, compiling, and uploading the program needed to run the system effectively.
+
+Testing Individual Components
+
+> Ultrasonic Sensor: We tested the ultrasonic sensor by holding it and moving it closer and farther from a bucket filled with water. The sensor successfully detected the changes in distance, showing that it was working properly.
+
+> LEDs: We tested the LEDs separately using the 9V battery. It lighted up correctly, confirming that they were functional and properly connected.
+
+> Buzzer: We tested the buzzer by connecting it to the circuit and placing an object within the set distance. The buzzer produced sound as expected, indicating that it was working and responding properly to the sensor’s signal.
+
+> LCD Display: We tested the LCD Display by uploading a simple display program. The screen successfully showed the measured distance and status readings by confirming proper communication with the Arduino.
+
+>MOSFET and Water Pump: We verified that the MOSFET and water pump by triggering the control signal from the Arduino. The pump turned on and off correctly, showing that the MOSFET and pump worked properly.
+
+> Power Supply: The 9V battery provided stable voltage to all components during operation, ensuring that the system functioned properly throughout testing.
+
+Testing the Complete System
+> Water Level Simulation: The ultrasonic sensor accurately measured the water height in the container, the LED indicators displayed safe (0–2 cm below), warning (3 cm), and critical (4 cm above) levels, and the buzzer sounded for 10 seconds when the water reached the danger threshold. When the water level reached the critical point, the pump automatically started drawing water, and it continued operating until the reading reached 0.0 cm, at which point the pump automatically stopped. Although minor inaccuracies occurred when the water surface was disturbed, the system functioned reliably and effectively overall.
+
+> System Stability: We conducted multiple trials to assess the system’s stability, ensuring that all components, including sensors, LEDs, buzzer, and pump, operated synchronously and consistently under continuous operation.
+
+> Flood Control Simulation: We verified that the system effectively simulated real-time flood control by automatically managing water levels and preventing overflow.
+
+Troubleshooting Challenges
+During the testing phase, several minor issues were encountered, including difficulty connecting the Arduino to the water pump.
+
+The water pump failed to operate while the LED indicators remained functional. This issue was resolved by integrating a MOSFET and using an additional 9V battery to facilitate proper water pumping.
+
+Troubleshooting was required for the PCB because the purchased board was incorrect, and the traces on the back of the PCB did not properly connect the components. Adjustments were made to ensure all connections were correctly linked.
+
+When the ultrasonic sensor showed incorrect measurements, it was adjusted to ensure accurate detection of the water height as it gradually increased during testing.
+Water leakage was observed in the pathways of the assembled model, which was resolved by applying additional sealing to ensure stable water measurement during continuous trials.
+
+
+Final Validation
+
+The flood control system was tested multiple times at 2816 Molave St., Abegail’s residence, under simulated flood conditions to assess its overall performance. During the testing phase, varying water levels were introduced to evaluate the system’s ability to detect and respond to changes in real time. The results confirmed that the system accurately measured the water height using the ultrasonic sensor, activated the corresponding LED indicators to represent safe, warning, and critical levels, and triggered the buzzer for 10 seconds once the danger threshold was reached. The water flow along the sides of the container was also monitored to verify the stability and consistency of sensor readings.
+
+It was noted, however, that slight deviations in measurement occurred when the water surface was disturbed. This behavior is attributed to the ultrasonic sensor’s reliance on stable surface reflections for precise distance measurement, which can be temporarily affected by surface movement or turbulence. Once the water surface became calm, the sensor readings returned to their accurate state.
+
+In summary, the results demonstrated that the flood control system functioned effectively and reliably under controlled conditions. Minor variations in readings due to water surface disturbances were identified as an expected sensor characteristic and did not significantly impact the system’s overall accuracy or performance.
+

@@ -1,0 +1,185 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+// --- LCD Setup ---
+LiquidCrystal_I2C lcd(0x27, 16, 2);  // Change to 0x3F if needed
+
+// --- Pin Definitions ---
+#define TRIG_PIN 9
+#define ECHO_PIN 8
+#define MOSFET_GATE 10   // replaces relay pin
+#define GREEN_LED 4
+#define YELLOW_LED 5
+#define RED_LED 6
+#define BUZZER 7
+
+// --- Tank Settings ---
+const float TANK_HEIGHT_CM = 7.62; // 3 inches = 7.62 cm
+
+// --- Variables ---
+float waterLevel = 0;
+float prevWaterLevel = 0;
+float riseRate = 0;
+unsigned long lastMeasureTime = 0;
+unsigned long interval = 1000;
+bool pumpOn = false;
+
+// 🔹 Added smoothing variables
+#define SMOOTH_COUNT 10
+float waterHistory[SMOOTH_COUNT];
+int historyIndex = 0;
+bool historyFilled = false;
+
+// 🔹 Buzzer timing
+bool buzzerActive = false;
+unsigned long buzzerStartTime = 0;
+const unsigned long BUZZER_DURATION = 10000; // 10 seconds
+
+void setup() {
+  Serial.begin(9600);
+  lcd.init();
+  lcd.backlight();
+
+  pinMode(TRIG_PIN, OUTPUT);
+  pinMode(ECHO_PIN, INPUT);
+  pinMode(MOSFET_GATE, OUTPUT);
+  pinMode(GREEN_LED, OUTPUT);
+  pinMode(YELLOW_LED, OUTPUT);
+  pinMode(RED_LED, OUTPUT);
+  pinMode(BUZZER, OUTPUT);
+
+  // --- Initial States ---
+  digitalWrite(MOSFET_GATE, LOW);
+  digitalWrite(BUZZER, LOW);
+  digitalWrite(GREEN_LED, LOW);
+  digitalWrite(YELLOW_LED, LOW);
+  digitalWrite(RED_LED, LOW);
+
+  lcd.setCursor(0, 0);
+  lcd.print("   BAHALAYA");
+  delay(1500);
+  lcd.clear();
+}
+
+void loop() {
+  if (millis() - lastMeasureTime >= interval) {
+    lastMeasureTime = millis();
+
+    float distance = getDistanceCM();
+    waterLevel = TANK_HEIGHT_CM - distance;
+    if (waterLevel < 0) waterLevel = 0;
+    if (waterLevel > TANK_HEIGHT_CM) waterLevel = TANK_HEIGHT_CM;
+
+    // 🔹 Store recent readings for averaging
+    waterHistory[historyIndex] = waterLevel;
+    historyIndex = (historyIndex + 1) % SMOOTH_COUNT;
+    if (historyIndex == 0) historyFilled = true;
+
+    float sum = 0;
+    int count = historyFilled ? SMOOTH_COUNT : historyIndex;
+    for (int i = 0; i < count; i++) sum += waterHistory[i];
+    float avgLevel = sum / count;
+
+    // 🔹 Rise rate calculation based on time (cm/s)
+    static unsigned long lastTime = 0;
+    unsigned long currentTime = millis();
+    float timeElapsed = (currentTime - lastTime) / 1000.0; // seconds
+
+    if (timeElapsed > 0) {
+      riseRate = (waterLevel - prevWaterLevel) / timeElapsed;
+    }
+
+    // Ignore tiny noise fluctuations
+    if (fabs(riseRate) < 0.05) {
+      riseRate = 0;
+    }
+
+    prevWaterLevel = waterLevel;
+    lastTime = currentTime;
+
+    // --- Pump & Buzzer Control with hysteresis ---
+    if (!pumpOn && waterLevel >= 4.0) {
+      // 🔴 Critical: Turn ON pump
+      pumpOn = true;
+      digitalWrite(MOSFET_GATE, HIGH);
+
+      // Start buzzer for 10 seconds only
+      buzzerActive = true;
+      buzzerStartTime = millis();
+      digitalWrite(BUZZER, HIGH);
+    }
+    else if (pumpOn && waterLevel <= 0.0) {
+      // 🟢 Very Low: Turn OFF pump
+      pumpOn = false;
+      digitalWrite(MOSFET_GATE, LOW);
+    }
+
+    // Stop buzzer after 10 seconds
+    if (buzzerActive && millis() - buzzerStartTime >= BUZZER_DURATION) {
+      digitalWrite(BUZZER, LOW);
+      buzzerActive = false;
+    }
+
+    // --- Status Classification ---
+    String status;
+    int ledPin;
+
+    if (waterLevel < 2.0) {
+      status = "SAFE";
+      ledPin = GREEN_LED;
+    } else if (waterLevel < 4.0) {
+      status = "WARN";
+      ledPin = YELLOW_LED;
+    } else {
+      status = "CRIT";
+      ledPin = RED_LED;
+    }
+
+    // --- LEDs ---
+    digitalWrite(GREEN_LED, LOW);
+    digitalWrite(YELLOW_LED, LOW);
+    digitalWrite(RED_LED, LOW);
+    digitalWrite(ledPin, HIGH);
+
+    // --- LCD Display ---
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("Lvl:");
+    lcd.print(waterLevel, 1);
+    lcd.print("cm ");
+    lcd.print(status);
+
+    lcd.setCursor(0, 1);
+    lcd.print("P:");
+    lcd.print(pumpOn ? "ON " : "OFF");
+    lcd.print(" Δ:");
+    lcd.print(riseRate, 1);
+    lcd.print("cm");
+
+    // --- Debug Monitor ---
+    Serial.print("Level: "); Serial.print(waterLevel);
+    Serial.print(" cm | Status: "); Serial.print(status);
+    Serial.print(" | Pump: "); Serial.print(pumpOn ? "ON" : "OFF");
+    Serial.print(" | RiseRate: "); Serial.println(riseRate, 2);
+  }
+}
+
+// --- Smoothed Distance Measurement ---
+float getDistanceCM() {
+  const int samples = 5;
+  float total = 0;
+
+  for (int i = 0; i < samples; i++) {
+    digitalWrite(TRIG_PIN, LOW);
+    delayMicroseconds(2);
+    digitalWrite(TRIG_PIN, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TRIG_PIN, LOW);
+    long duration = pulseIn(ECHO_PIN, HIGH, 30000);
+    float distance = (duration * 0.0343) / 2;
+    total += distance;
+    delay(50);
+  }
+
+  return total / samples;
+}
